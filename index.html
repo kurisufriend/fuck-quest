@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+:root
+{
+    --bg: #ffe;
+    --fg: #f0e0d6;
+    --fgbord: #d9bfb7;
+}
+body 
+{
+    background-color: var(--bg);
+}
+.post {
+	background-color: var(--fg);
+	border: 1px solid var(--fgbord);
+	border-left: none;
+	border-top: none;
+	display: table;
+	padding: 2px;
+}
+.footer
+{
+    position: absolute;
+    bottom: 0%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+@keyframes bounce
+{
+    from
+    {
+        transfrom: translate(0, 0);
+    }
+    50% 
+    {
+        transform: translate(0, 5%);
+    }
+    to
+    {
+        transform: translate(0, 0);
+    }
+}
+.bounce
+{
+    animation-name: bounce;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-delay: var(--adel);
+}
+.header
+{
+    margin-top: 7.5%;
+    display: flex;
+    justify-content: center;
+	color: #AF0A0F;
+}
+.img-marquee
+{
+    position: absolute;
+    top: 0%;
+    height: 5%;
+    width: 100%;
+}
+.marq-inner
+{
+    padding-right: 2em;
+    height: 4.5em;
+    filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 black);
+}
+
+.banner {
+	font-family: Tahoma;
+	font-size: 28px;
+	font-weight: bold;
+	letter-spacing: -2px;
+	margin-top: 0px;
+    text-align: center;
+}
+</style>
+
+<script>
+var mapping = {
+    yot: {"--bg": "#ffe", "--fg": "#f0e0d6", "--fgbord": "#d9bfb7"},
+    yotb: {"--bg": "#eef2ff", "--fg": "#D6DAF0", "--fgbord": "#B7C5D9"},
+}
+var charimgs = ['rose2.png',
+ 'alex.png',
+ 'viv.png',
+ 'smatters.png',
+ 'cerise.png',
+ 'OP.png',
+ 'whitney.png',
+ 'david.png',
+ 'ally.png',
+ 'gal.png',
+ 'carte.png',
+ 'mom.png',
+ 'noelle.png',
+ 'amber.png',
+ 'rose.png',
+ 'kay.png',
+ 'sable.png',
+ 'charlotte.png']
+var r = document.querySelector(":root");
+function changestyle()
+{
+    var theme = document.getElementById("stylechanger").value;
+    for (const [k,v] of Object.entries(mapping[theme]))
+    {
+        r.style.setProperty(k, v);
+    }
+}
+</script>
+
+</head>
+
+<body>
+<div class="header">
+<div class="img-marquee">
+<marquee id="themarqueeinquestion"><img src="imgs/cerise.png" class="marq-inner bounce" style="--adel: 0s;"></marquee>
+</div>
+<div class="post banner">
+FUCK QUEST:<br><small><small>THE UNOFFICIAL ARCHIVE</small></small>
+</div>
+</div>
+
+<div class="footer">
+<select name="style" id="stylechanger" onchange="changestyle()">
+    <option value="yot">Yotsuba</option>
+    <option value="yotb">Yotsuba B</option>
+</select>
+</div>
+</body>
+<script>
+var marq = document.getElementById("themarqueeinquestion");
+var flip = false;
+charimgs.forEach(fn => {
+    var e = document.createElement("img");
+    e.src = "imgs/"+fn;
+    e.classList.add("marq-inner");
+    e.classList.add("bounce");
+    flip = !flip;
+    e.style.cssText = "--adel: " + (flip ? "0s" : "1s") + ";";
+    marq.appendChild(e);
+});
+</script>
+</html>
