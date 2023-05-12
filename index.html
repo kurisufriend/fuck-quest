@@ -60,18 +60,43 @@ body
 }
 .img-marquee
 {
-    position: absolute;
     top: 0%;
     height: 5%;
     width: 100%;
 }
 .marq-inner
 {
+    position: absolute;
+    top: 0%;
+    visibility: hidden;
     padding-right: 2em;
     height: 4.5em;
-    filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 black);
+    filter: drop-shadow(1px 1px 0 var(--fgbord)) drop-shadow(-1px -1px 0 var(--fgbord));
 }
-
+.marq-inner:hover
+{
+    height: 6em;
+}
+@keyframes banrar
+{
+    from
+    {
+        visibility: visible;
+        right: 0%
+    }
+    to
+    {
+        right: 100%;
+    }
+}
+.slide
+{
+    animation-name: banrar, bounce;
+    animation-timing-function: linear, ease-in-out;
+    animation-duration: 10s, 2s;
+    animation-iteration-count: infinite;
+    animation-delay: var(--bdel), var(--adel);
+}
 .banner {
 	font-family: Tahoma;
 	font-size: 28px;
@@ -119,10 +144,11 @@ function changestyle()
 </head>
 
 <body>
-<div class="header">
 <div class="img-marquee">
-<marquee id="themarqueeinquestion"><img src="imgs/cerise.png" class="marq-inner bounce" style="--adel: 0s;"></marquee>
+<div id="themarqueeinquestion"></divs>
 </div>
+
+<div class="header">
 <div class="post banner">
 FUCK QUEST:<br><small><small>THE UNOFFICIAL ARCHIVE</small></small>
 </div>
@@ -134,17 +160,22 @@ FUCK QUEST:<br><small><small>THE UNOFFICIAL ARCHIVE</small></small>
     <option value="yotb">Yotsuba B</option>
 </select>
 </div>
+
 </body>
 <script>
 var marq = document.getElementById("themarqueeinquestion");
 var flip = false;
+var i = 0;
 charimgs.forEach(fn => {
     var e = document.createElement("img");
     e.src = "imgs/"+fn;
     e.classList.add("marq-inner");
     e.classList.add("bounce");
+    e.classList.add("slide");
     flip = !flip;
     e.style.cssText = "--adel: " + (flip ? "0s" : "1s") + ";";
+    e.style.cssText += "--bdel: " + i + "s;";
+    i += .5;
     marq.appendChild(e);
 });
 </script>
