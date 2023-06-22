@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<link rel="stylesheet" href="/main.css" type="text/css">
+
+<script>
+var mapping = {
+    yot: {"--bg": "#ffe", "--fg": "#f0e0d6", "--fgbord": "#d9bfb7", "--subj": "#cc1105"},
+    yotb: {"--bg": "#eef2ff", "--fg": "#D6DAF0", "--fgbord": "#B7C5D9", "--subj": "#0F0C5D"},
+}
+var charimgs = ['rose2.png',
+ 'alex.png',
+ 'viv.png',
+ 'smatters.png',
+ 'cerise.png',
+ 'OP.png',
+ 'whitney.png',
+ 'david.png',
+ 'ally.png',
+ 'gal.png',
+ 'carte.png',
+ 'mom.png',
+ 'noelle.png',
+ 'amber.png',
+ 'rose.png',
+ 'kay.png',
+ 'sable.png',
+ 'charlotte.png']
+var r = document.querySelector(":root");
+for (const [k, v] of Object.entries(mapping[localStorage.getItem("theme")]))
+    r.style.setProperty(k, v);
+
+function changestyle()
+{
+    var theme = document.getElementById("stylechanger").value;
+    localStorage.setItem("theme", theme);
+    for (const [k, v] of Object.entries(mapping[theme]))
+        r.style.setProperty(k, v);
+}
+</script>
+
+</head>
+
+<body>
+{{{body}}}
+<div class="footer">
+    <i>with thanks to and reverence for the one and only <a href="https://op-studios.net">OP Studios</a></i><br>
+    <div class="footer-i">
+    <select name="style" id="stylechanger" onchange="changestyle()">
+        <option value="yot">Yotsuba</option>
+        <option value="yotb">Yotsuba B</option>
+    </select>
+    </div></div>
+</body>
+
+<script>
+document.getElementById("stylechanger").value = localStorage.getItem("theme");
+
+
+var marq = document.getElementById("themarqueeinquestion");
+if (marq)
+{
+    var flip = false;
+    var i = 0;
+    charimgs.forEach(fn => {
+        var e = document.createElement("img");
+        e.src = "imgs/"+fn;
+        e.classList.add("marq-inner");
+        e.classList.add("bounce");
+        e.classList.add("slide");
+        flip = !flip;
+        e.style.cssText = "--adel: " + (flip ? "0s" : "1s") + ";";
+        e.style.cssText += "--bdel: " + i + "s;";
+        i += .5;
+        marq.appendChild(e);
+    });
+}
+</script>
+</html>
