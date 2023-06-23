@@ -1,4 +1,4 @@
-import sqlite3, requests, json, os, sys
+import sqlite3, requests, json, os, sys, pathlib
 
 uri = "https://archived.moe"
 base = "/_/api/chan/"
@@ -21,7 +21,17 @@ for k,v in [i.split(": ") for i in h.split("\n")[1:]]: headers[k] = v
 
 def get_thread(board, id):
     print(uri+base+f"thread/?board={board}&num={id}")
-    return requests.get(uri+base+f"thread/?board={board}&num={id}", headers=headers).json()
+    cached = pathlib.Path("./cache/"+board+str(id)).exists()
+    if cached:
+        f = open("./cache/"+board+str(id))
+        res = json.loads(f.read())
+        f.close()
+        return res
+    f = open("./cache/"+board+str(id), "w")
+    res = requests.get(uri+base+f"thread/?board={board}&num={id}", headers=headers).json()
+    f.write(json.dumps(res, indent=2))
+    f.close()
+    return res
 
 create_posts = """create table posts(
 subject TEXT,
@@ -42,8 +52,15 @@ is_lewd INTEGER,
 next_lewd INTEGER
 );"""
 
-create_images = """create table images
-"""
+create_episodes = """create table episodes(
+number INTEGER,
+title TEXT
+);"""
+
+create_episode_assignments = """create table episode_assignments(
+number INTEGER,
+thread INTEGER
+);"""
 
 try: os.remove("newfag.db")
 except FileNotFoundError: pass
@@ -56,6 +73,26 @@ is_story, next_story, is_lewd, next_lewd):
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
     z = lambda a: f'"{k(str(a))}"' if type(a) == type("") else str(a)
     finger.execute(("insert into posts values(" + ",".join([z(j[i]) for i in commit_post_to_db.__code__.co_varnames]) + ");"))
+
+def commit_from_data(jsonbase, us_num, op_n):
+    commit_post_to_db(
+        notnull(jsonbase["title"]) or "",                                #subject
+        "", # b64 of the image TODO                                 #picrel
+        notnull(jsonbase["name"]) or "Anonymous",                        #name
+        notnull(jsonbase["trip"]) or "",                                 #trip
+        int(notnull(jsonbase["timestamp"])) or 0,                        #tim
+        int(notnull(jsonbase["num"])) or 0,                              #post_number
+        int(op_n),                                                  #op_no
+        board,                                                      #original_board
+        notnull(jsonbase["comment"]) or "DICKS EVERYWHERE",              #bod
+        notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
+        1 if (notnull(jsonbase["num"]) == str(op_n)) else 0,             #is_op
+        1 if (notnull(jsonbase["trip"]) in op_trips) else 0,      #is_op_studios
+        1 if (notnull(jsonbase["num"]) in story_post_ids) else 0,        #is_story
+        -1, # next_story post TODO                                  #next_story
+        1 if (notnull(jsonbase["num"]) in lewd_post_ids) else 0,         #is_lewd
+        -1 # next lewd post TODO                                    #next_lewd
+    )
 
 notnull = lambda a: a if not(a == "null") else False
 
@@ -73,7 +110,7 @@ f.close()
 for ttt in all_threads:
     board = ttt[0]
     op_n = int(ttt[1])
-    print("doing thread", op_n)
+    print("\ndoing thread", op_n)
 
     thread = get_thread(board, op_n)
     op = thread[str(op_n)]["op"]
@@ -82,43 +119,9 @@ for ttt in all_threads:
     ctr = 0
     for n in posts.keys():
         ctr += 1
-        print("\b"*10, ctr, "out of", thread_length)
+        print("\b"*50, ctr, "out of", thread_length, end="")
         cur = posts[n]
-        commit_post_to_db(
-            notnull(cur["title"]) or "",                                #subject
-            "", # filename of the image TODO                                 #picrel
-            notnull(cur["name"]) or "Anonymous",                        #name
-            notnull(cur["trip"]) or "",                                 #trip
-            int(notnull(cur["timestamp"])) or 0,                        #tim
-            int(notnull(cur["num"])) or 0,                              #post_number
-            int(op_n),                                                  #op_no
-            board,                                                      #original_board
-            notnull(cur["comment"]) or "DICKS EVERYWHERE",              #bod
-            notnull(cur["poster_hash"]) or "000000",                    #usr_id
-            1 if (notnull(cur["num"]) == str(op_n)) else 0,             #is_op
-            1 if (notnull(cur["trip"]) in op_trips) else 0,      #is_op_studios
-            1 if (notnull(cur["num"]) in story_post_ids) else 0,        #is_story
-            -1, # next_story post TODO                                  #next_story
-            1 if (notnull(cur["num"]) in lewd_post_ids) else 0,         #is_lewd
-            -1 # next lewd post TODO                                    #next_lewd
-        )
+        commit_from_data(cur, n, op_n)
     n = op_n
-    commit_post_to_db(
-        notnull(op["title"]) or "",                                #subject
-        "", # filename of the image TODO                                 #picrel
-        notnull(op["name"]) or "Anonymous",                        #name
-        notnull(op["trip"]) or "",                                 #trip
-        int(notnull(op["timestamp"])) or 0,                        #tim
-        int(notnull(op["num"])) or 0,                              #post_number
-        int(op_n),                                                  #op_no
-        board,                                                      #original_board
-        notnull(op["comment"]) or "DICKS EVERYWHERE",              #bod
-        notnull(op["poster_hash"]) or "000000",                    #usr_id
-        1 if (notnull(op["num"]) == str(op_n)) else 0,             #is_op
-        1 if (notnull(op["trip"]) in op_trips) else 0,      #is_op_studios
-        1 if (notnull(op["num"]) in story_post_ids) else 0,        #is_story
-        -1, # next_story post TODO                                  #next_story
-        1 if (notnull(op["num"]) in lewd_post_ids) else 0,         #is_lewd
-        -1 # next lewd post TODO                                    #next_lewd
-    )
+    commit_from_data(op, n, op_n)
 anus.commit()
