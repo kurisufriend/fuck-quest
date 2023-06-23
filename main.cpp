@@ -5,6 +5,7 @@
 
 #include "threads.h"
 
+#include <cctype>
 #include <cstdlib>
 #include <iostream>
 #include <map>
@@ -57,8 +58,17 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
                 if (*c == ' ') {break;}
                 tid_trimmed.push_back(*c);
             }
-            std::cout << tid_trimmed.substr(4) << std::endl;
-            int tid = std::stoi(tid_trimmed.substr(4));
+            tid_trimmed = tid_trimmed.substr(4);
+            bool is_num = true;
+            foreach(tid_trimmed, c) {is_num &= std::isdigit(*c);}
+            std::cout << is_num << std::endl;
+            if (!is_num)
+            {
+                mg_http_reply(c, 404, headers.c_str(), 
+                    "the name's huwer, as in who are the fuck is you?");
+                return;
+            }
+            int tid = std::stoi(tid_trimmed);
             headers.append("Content-Type: text/html;charset=shift_jis\n");
             mg_http_reply(c, 200, headers.c_str(),
                 dumbfmt_file("./static/index.html", {
