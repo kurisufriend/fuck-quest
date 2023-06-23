@@ -46,9 +46,13 @@ bod TEXT,
 usr_id TEXT,
 is_op INTEGER,
 is_op_studios INTEGER,
+prev_op_studios INTEGER,
+next_op_studios INTEGER,
 is_story INTEGER,
+prev_story INTEGER,
 next_story INTEGER,
 is_lewd INTEGER,
+prev_lewd INTEGER,
 next_lewd INTEGER
 );"""
 
@@ -67,8 +71,18 @@ except FileNotFoundError: pass
 anus = sqlite3.connect("newfag.db") 
 finger = anus.cursor()
 
+notnull = lambda a: a if not(a == "null") else False
+
+next_op_studios_hints = json.loads(open("next_op_studios_hints.json").read())
+prev_op_studios_hints = {}
+for k in next_op_studios_hints.keys():
+    prev_op_studios_hints[next_op_studios_hints[k]] = k
+story_post_ids = []
+lewd_post_ids = []
+op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg"]
+
 def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, original_board, bod, usr_id, is_op, is_op_studios,
-is_story, next_story, is_lewd, next_lewd):
+prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd):
     j = locals().copy()
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
     z = lambda a: f'"{k(str(a))}"' if type(a) == type("") else str(a)
@@ -104,17 +118,15 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
         notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
         1 if (str(us_num) == str(op_n)) else 0,             #is_op
         1 if (notnull(jsonbase["trip"]) in op_trips) else 0,      #is_op_studios
+        int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
+        int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
         1 if (str(us_num) in story_post_ids) else 0,        #is_story
+        -1, # prev_story post TODO                                  #prev_story
         -1, # next_story post TODO                                  #next_story
         1 if (str(us_num) in lewd_post_ids) else 0,         #is_lewd
+        -1, # prev lewd post TODO                                    #prev_lewd
         -1 # next lewd post TODO                                    #next_lewd
     )
-
-notnull = lambda a: a if not(a == "null") else False
-
-story_post_ids = []
-lewd_post_ids = []
-op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg"]
 
 finger.execute(create_posts)
 anus.commit()
