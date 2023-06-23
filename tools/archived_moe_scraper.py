@@ -1,4 +1,4 @@
-import sqlite3, requests, json, os, sys, pathlib
+import sqlite3, requests, json, os, sys, pathlib, re
 
 uri = "https://archived.moe"
 base = "/_/api/chan/"
@@ -74,23 +74,39 @@ is_story, next_story, is_lewd, next_lewd):
     z = lambda a: f'"{k(str(a))}"' if type(a) == type("") else str(a)
     finger.execute(("insert into posts values(" + ",".join([z(j[i]) for i in commit_post_to_db.__code__.co_varnames]) + ");"))
 
-def commit_from_data(jsonbase, us_num, op_n):
+
+def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dictionary):
+    basexxx = notnull(jsonbase["comment"]) or "DICKS EVERYWHERE"
+    ctr = 0
+    while ctr < len(basexxx):
+        if basexxx[ctr] == ">" and basexxx[ctr:ctr+2] == ">>" and not(basexxx[ctr:ctr+3] == ">>>"):
+            ctr2 = ctr+2
+            while ctr2 < len(basexxx) and (ord(basexxx[ctr2]) >= 48 and ord(basexxx[ctr2]) <= 57 ): ctr2 += 1
+            target = basexxx[ctr:ctr2]
+            if len(target) > 2 and real_to_fake_tranny_dictionary.get(target[2:]):
+                rep = real_to_fake_tranny_dictionary[target[2:]]
+                basexxx = basexxx.replace(target, f'<a href=[realquoterep]#{rep}[realquoterep]>'+">>"+rep+"</a>")
+                #basexxx = basexxx[:ctr] + real_to_fake_tranny_dictionary[target[2:]] + basexxx[ctr2:]
+                #print("okay NIGGER replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
+                #print(target)
+        ctr += 1
+
     commit_post_to_db(
         notnull(jsonbase["title"]) or "",                                #subject
         "", # b64 of the image TODO                                 #picrel
         notnull(jsonbase["name"]) or "Anonymous",                        #name
         notnull(jsonbase["trip"]) or "",                                 #trip
         int(notnull(jsonbase["timestamp"])) or 0,                        #tim
-        int(notnull(jsonbase["num"])) or 0,                              #post_number
+        int(us_num),                              #post_number
         int(op_n),                                                  #op_no
         board,                                                      #original_board
-        notnull(jsonbase["comment"]) or "DICKS EVERYWHERE",              #bod
+        basexxx,              #bod
         notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
-        1 if (notnull(jsonbase["num"]) == str(op_n)) else 0,             #is_op
+        1 if (str(us_num) == str(op_n)) else 0,             #is_op
         1 if (notnull(jsonbase["trip"]) in op_trips) else 0,      #is_op_studios
-        1 if (notnull(jsonbase["num"]) in story_post_ids) else 0,        #is_story
+        1 if (str(us_num) in story_post_ids) else 0,        #is_story
         -1, # next_story post TODO                                  #next_story
-        1 if (notnull(jsonbase["num"]) in lewd_post_ids) else 0,         #is_lewd
+        1 if (str(us_num) in lewd_post_ids) else 0,         #is_lewd
         -1 # next lewd post TODO                                    #next_lewd
     )
 
@@ -107,21 +123,32 @@ f = open("thread_hints.json")
 all_threads = json.loads(f.read())
 f.close()
 
+fake_n = 0
+
+
 for ttt in all_threads:
+    rtftd = {}
     board = ttt[0]
     op_n = int(ttt[1])
+    fake_op_n = fake_n
     print("\ndoing thread", op_n)
 
     thread = get_thread(board, op_n)
     op = thread[str(op_n)]["op"]
     posts = thread[str(op_n)]["posts"]
     thread_length = len(posts)
+
+    rtftd[str(op_n)] = str(fake_n)
+    commit_from_data(op, fake_n, op_n, fake_op_n, rtftd)
+    fake_n += 1
+
     ctr = 0
     for n in posts.keys():
         ctr += 1
         print("\b"*50, ctr, "out of", thread_length, end="")
         cur = posts[n]
-        commit_from_data(cur, n, op_n)
-    n = op_n
-    commit_from_data(op, n, op_n)
+        rtftd[str(n)] = str(fake_n)
+        commit_from_data(cur, fake_n, n, fake_op_n, rtftd)
+        fake_n += 1
+
 anus.commit()

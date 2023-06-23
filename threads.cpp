@@ -7,6 +7,7 @@
 
 std::string threads::make_post(sqlite3* db, row data)
 {
+    bool is_op = data["is_op_studios"] == "1";
     time_t ti = (time_t)std::stoi(data["tim"]);
     return dumbfmt_file("./static/template/post.html", {
         {"no", data["post_number"]},
@@ -15,12 +16,12 @@ std::string threads::make_post(sqlite3* db, row data)
         {"trip", data["trip"]},
         {"posterid", data["usr_id"]},
         {"date", ctime(&ti)},
-        {"body", data["bod"]},
+        {"body", std::regex_replace(data["bod"], std::regex("\\[realquoterep\\]"), "\"")},
+    
+        {"nav-top", is_op ? dumbfmt_file("./static/template/navigator.html", {}) : ""},
+        {"nav-bottom", is_op ? dumbfmt_file("./static/template/navigator.html", {}) : ""},
 
-        {"nav-top", ""},
-        {"nav-bottom", ""},
-
-        {"specials", ""}
+        {"specials", is_op ? "op-studios" : ""}
         
     });
 }
