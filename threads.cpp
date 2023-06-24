@@ -8,13 +8,10 @@
 std::string threads::make_post(sqlite3* db, row data)
 {
     bool is_op = data["is_op_studios"] == "1";
-    std::cout << data["prev_op_studios"] << " " << data["next_op_studios"] << " " << data["op_no"] << " " << data["reply_count"] << std::endl;
-    std::cout << "lol" << std::endl;
     int prev_op_studios_int = std::stoi(data["prev_op_studios"]);
     int next_op_studios_int = std::stoi(data["next_op_studios"]);
     int op_no_int = std::stoi(data["op_no"]);
     int thread_ender = op_no_int+std::stoi(data["reply_count"]);
-    std::cout << "thread ender: " << thread_ender << std::endl;
     std::map<std::string, std::string> nav_block = {
         {"prev_op", dumbfmt({"#", data["prev_op_studios"]})},
         {"next_op", dumbfmt({(next_op_studios_int <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_op_studios"]})}
@@ -27,7 +24,7 @@ std::string threads::make_post(sqlite3* db, row data)
         {"trip", data["trip"]},
         {"posterid", data["usr_id"]},
         {"date", ctime(&ti)},
-        {"body", std::regex_replace(data["bod"], std::regex("\\[realquoterep\\]"), "\"")},
+        {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
     
         {"nav-top", is_op ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},
         {"nav-bottom", is_op ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},

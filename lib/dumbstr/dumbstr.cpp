@@ -1,7 +1,7 @@
 #include <fstream>
 #include <istream>
 #include <iterator>
-#include <regex>
+#include <string>
 #include "dumbstr.h"
 #include <iostream>
 
@@ -11,6 +11,17 @@ std::string dumbfmt(std::vector<std::string> o)
     for (auto iter = o.begin(); iter != o.end(); iter++)
         base.append(*iter);
     return base;
+}
+
+std::string dumbfmt_replace(std::string needle, std::string gold, std::string &haystack)
+{
+    int last_found = 0;
+    while (haystack.find(needle, last_found) != std::string::npos)
+    {
+        last_found = haystack.find(needle, last_found);
+        haystack.replace(last_found, needle.length(), gold);
+    }
+    return haystack;
 }
 
 std::string dumbfmt_file(std::string path, std::map<std::string, std::string> dict, bool cach)
@@ -29,9 +40,10 @@ std::string dumbfmt_file(std::string path, std::map<std::string, std::string> di
     }
     for (std::pair<std::string, std::string> p : dict)
     {
-        body = std::regex_replace(body,
-            std::regex(dumbfmt({"\\{\\{\\{", p.first,"\\}\\}\\}"})),
-            p.second);
+        body = dumbfmt_replace(dumbfmt({"{{{", p.first,"}}}"}), p.second, body);
+        //body = std::regex_replace(body,
+        //    std::regex(dumbfmt({"\\{\\{\\{", p.first,"\\}\\}\\}"})),
+        //    p.second);
     }
     return body;
 }
@@ -39,10 +51,10 @@ std::string dumbfmt_file(std::string path, std::map<std::string, std::string> di
 std::string dumbfmt_html_escape(std::string o)
 {
     std::string res = o;
-    res = std::regex_replace(res, std::regex("&"), "&amp;");
-    res = std::regex_replace(res, std::regex(">"), "&gt;");
-    res = std::regex_replace(res, std::regex("<"), "&lt;");
-    res = std::regex_replace(res, std::regex("\""), "&quot;");
-    res = std::regex_replace(res, std::regex("\'"), "&apos;");
+    res = dumbfmt_replace("&", "&amp;", res);
+    res = dumbfmt_replace(">", "&gt;", res);
+    res = dumbfmt_replace("<", "&lt;", res);
+    res = dumbfmt_replace("\"", "&quot;", res);
+    res = dumbfmt_replace("\'", "&apos;", res);
     return res;
 }
