@@ -45,6 +45,7 @@ original_board TEXT,
 bod TEXT,
 usr_id TEXT,
 is_op INTEGER,
+reply_count INTEGER,
 is_op_studios INTEGER,
 prev_op_studios INTEGER,
 next_op_studios INTEGER,
@@ -76,12 +77,12 @@ notnull = lambda a: a if not(a == "null") else False
 next_op_studios_hints = json.loads(open("next_op_studios_hints.json").read())
 prev_op_studios_hints = {}
 for k in next_op_studios_hints.keys():
-    prev_op_studios_hints[next_op_studios_hints[k]] = k
+    prev_op_studios_hints[str(next_op_studios_hints[k])] = str(k)
 story_post_ids = []
 lewd_post_ids = []
 op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg"]
 
-def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, original_board, bod, usr_id, is_op, is_op_studios,
+def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
 prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd):
     j = locals().copy()
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
@@ -89,7 +90,7 @@ prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, pre
     finger.execute(("insert into posts values(" + ",".join([z(j[i]) for i in commit_post_to_db.__code__.co_varnames]) + ");"))
 
 
-def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dictionary):
+def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dictionary, replies = -1):
     basexxx = notnull(jsonbase["comment"]) or "DICKS EVERYWHERE"
     ctr = 0
     while ctr < len(basexxx):
@@ -104,7 +105,6 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
                 #print("okay NIGGER replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
                 #print(target)
         ctr += 1
-
     commit_post_to_db(
         notnull(jsonbase["title"]) or "",                                #subject
         "", # b64 of the image TODO                                 #picrel
@@ -117,6 +117,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
         basexxx,              #bod
         notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
         1 if (str(us_num) == str(op_n)) else 0,             #is_op
+        thread_length,                                                #reply_count
         1 if (notnull(jsonbase["trip"]) in op_trips) else 0,      #is_op_studios
         int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
         int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
@@ -151,7 +152,7 @@ for ttt in all_threads:
     thread_length = len(posts)
 
     rtftd[str(op_n)] = str(fake_n)
-    commit_from_data(op, fake_n, op_n, fake_op_n, rtftd)
+    commit_from_data(op, fake_n, op_n, fake_op_n, rtftd, replies=thread_length)
     fake_n += 1
 
     ctr = 0
