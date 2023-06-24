@@ -39,12 +39,7 @@ std::string dumbfmt_file(std::string path, std::map<std::string, std::string> di
         cache.emplace(path, body);
     }
     for (std::pair<std::string, std::string> p : dict)
-    {
         body = dumbfmt_replace(dumbfmt({"{{{", p.first,"}}}"}), p.second, body);
-        //body = std::regex_replace(body,
-        //    std::regex(dumbfmt({"\\{\\{\\{", p.first,"\\}\\}\\}"})),
-        //    p.second);
-    }
     return body;
 }
 

@@ -34,15 +34,18 @@ std::string threads::make_post(sqlite3* db, row data)
     });
 }
 
-std::string threads::make_thread(sqlite3* db, int op_id)
+std::string threads::make_thread(sqlite3* db, int op_id, bool cach)
 {
+    std::string acc = "";
+    static std::map<int, std::string> cache;
+    if (cache.find(op_id) != cache.end() && cach)
+        return cache.at(op_id);
     rows posts = 
         sqleasy_q{db, dfmt({"select * from posts where op_no=", std::to_string(op_id), " order by post_number asc;"})}.exec();
-    std::string acc = "";
     foreach (posts, post)
     {
         acc.append(threads::make_post(db, *post));
     }
-    std::cout << acc.length() << std::endl;
+    cache.emplace(op_id, acc);
     return acc;
 }
