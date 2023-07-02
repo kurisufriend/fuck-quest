@@ -22,7 +22,7 @@ std::string threads::make_post(sqlite3* db, row data)
         {"subject", data["subject"]},
         {"name", (data["name"] == "Anonymous" && data["trip"] != "") ? "" : data["name"]},
         {"trip", data["trip"]},
-        {"posterid", data["usr_id"]},
+        {"posterid", (data["usr_id"] == "000000") ? "" : dumbfmt({"ID: ", data["usr_id"]})},
         {"date", ctime(&ti)},
         {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
     
