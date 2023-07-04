@@ -25,6 +25,8 @@ std::string threads::make_post(sqlite3* db, row data)
         {"posterid", (data["usr_id"] == "000000") ? "" : dumbfmt({"ID: ", data["usr_id"]})},
         {"date", ctime(&ti)},
         {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
+
+        {"markers", (data["is_ghost"] == "1") ? "<img src='/imgs/prof-ghost.png' title='ghost post!'></img>" : ""},
     
         {"nav-top", is_op ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},
         {"nav-bottom", is_op ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},

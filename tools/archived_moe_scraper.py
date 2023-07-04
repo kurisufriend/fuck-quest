@@ -54,7 +54,8 @@ prev_story INTEGER,
 next_story INTEGER,
 is_lewd INTEGER,
 prev_lewd INTEGER,
-next_lewd INTEGER
+next_lewd INTEGER,
+is_ghost INTEGER
 );"""
 
 create_episodes = """create table episodes(
@@ -83,7 +84,7 @@ lewd_post_ids = []
 op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg"]
 
 def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
-prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd):
+prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd, is_ghost):
     j = locals().copy()
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
     z = lambda a: f'"{k(str(a))}"' if type(a) == type("") else str(a)
@@ -126,7 +127,8 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
         -1, # next_story post TODO                                  #next_story
         1 if (str(us_num) in lewd_post_ids) else 0,         #is_lewd
         -1, # prev lewd post TODO                                    #prev_lewd
-        -1 # next lewd post TODO                                    #next_lewd
+        -1, # next lewd post TODO                                    #next_lewd
+        0 if (jsonbase["subnum"] == "0") else 1                                     #is_ghost
     )
 
 finger.execute(create_posts)
