@@ -15,6 +15,8 @@
 #include <fstream>
 
 #define XCLACKSOVERHEAD "X-Clacks-Overhead: GNU Terry Pratchett, GNU Aaron Swartz, GNU Hal Finney, GNU Norm Macdonald, GNU Gilbert Gottfried, GNU Aniki, GNU Terry Davis, GNU jstark, GNU John McAfee, GNU asshurtmacfags\n"
+#define THROW404() mg_http_reply(c, 404, headers.c_str(), "the name's huwer, as in who are the fuck is you?")
+
 
 typedef mg_connection connection;
 typedef mg_http_message message;
@@ -40,12 +42,11 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
         else if (mg_http_match_uri(msg, "/imgs/*"))
         {
             std::string stub = "./static";
-            for (auto iter = url.begin(); iter < url.end(); iter++)
+            foreach(url, iter)
             {
                 if (*iter == ' ') {break;}
                 stub.push_back(*iter);
             }
-            std::cout << stub << std::endl;
             mg_http_serve_opts opt {};
             mg_http_serve_file(c, msg, stub.c_str(), &opt);
         }
@@ -59,21 +60,30 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
                 tid_trimmed.push_back(*c);
             }
             tid_trimmed = tid_trimmed.substr(4);
+            std::string real = "";
+            std::string query = "";
+            bool past = false;
+            foreach(tid_trimmed, c)
+            {
+                if (*c == '?') {past = true;continue;}
+                (past ? query : real).push_back(*c);
+            }
+            tid_trimmed = real;
             bool is_num = true;
             foreach(tid_trimmed, c) {is_num &= std::isdigit(*c);}
-            std::cout << is_num << std::endl;
             if (!is_num)
             {
-                mg_http_reply(c, 404, headers.c_str(), 
-                    "the name's huwer, as in who are the fuck is you?");
+                THROW404();
                 return;
             }
+            bool reader_mode = (query == "reader_mode");
             int tid = std::stoi(tid_trimmed);
             headers.append("Content-Type: text/html;charset=shift_jis\n");
             mg_http_reply(c, 200, headers.c_str(),
                 dumbfmt_file("./static/index.html", {
                     {"body", dumbfmt_file("./static/template/tview.html", {
-                        {"temp", threads::make_thread(db, tid).c_str()}
+                        {"temp", threads::make_thread(db, tid, reader_mode).c_str()},
+                        {"nav", dumbfmt_file("./static/template/tnav.html",{{"query_link", reader_mode ? "?" : "?reader_mode"}})}
                     })}
                 }).c_str());
         }
@@ -89,8 +99,7 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
         gimmick("/CHART", "coming soon")
         else 
         {
-            mg_http_reply(c, 404, headers.c_str(), 
-                "the name's huwer, as in who are the fuck is you?");
+            THROW404();
         }
     }
 

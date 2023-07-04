@@ -151,3 +151,20 @@ gt
     background-color: black;
     color: white;
 }
+.nav a
+{
+    text-decoration: none;
+}
+.freebutt a
+{
+    text-decoration: none;
+    color: #AF0A0F;
+}
+.freebutt:hover
+{
+    background-color: rgba(255, 255, 255, .5);   
+}
+.markers img
+{
+    height: 1em;
+}

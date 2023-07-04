@@ -41,6 +41,8 @@ trip TEXT,
 tim INTEGER,
 post_number INTEGER,
 op_no INTEGER,
+prev_op INTEGER,
+next_op INTEGER,
 original_board TEXT,
 bod TEXT,
 usr_id TEXT,
@@ -79,19 +81,25 @@ next_op_studios_hints = json.loads(open("next_op_studios_hints.json").read())
 prev_op_studios_hints = {}
 for k in next_op_studios_hints.keys():
     prev_op_studios_hints[str(next_op_studios_hints[k])] = str(k)
-story_post_ids = []
+story_hints = json.loads(open("story_hints.json").read())
 lewd_post_ids = []
 op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg"]
 
-def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
+f = open("thread_hints.json")
+all_threads = json.loads(f.read())
+f.close()
+
+bare_threads = [int(i[1]) for i in all_threads]
+
+def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, prev_op, next_op, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
 prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd, is_ghost):
     j = locals().copy()
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
     z = lambda a: f'"{k(str(a))}"' if type(a) == type("") else str(a)
     finger.execute(("insert into posts values(" + ",".join([z(j[i]) for i in commit_post_to_db.__code__.co_varnames]) + ");"))
 
-
-def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dictionary, replies = -1):
+bigbook = {}
+def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tranny_dictionary, replies = -1):
     basexxx = notnull(jsonbase["comment"]) or "DICKS EVERYWHERE"
     ctr = 0
     while ctr < len(basexxx):
@@ -114,6 +122,8 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
         int(notnull(jsonbase["timestamp"])) or 0,                        #tim
         int(us_num),                              #post_number
         int(op_n),                                                  #op_no
+        bigbook[str(bare_threads[bare_threads.index(int(og_op_n))-1])] if bare_threads.index(int(og_op_n))-1 >= 0 else -1,                                                  #prev_op
+        int(op_n)+int(thread_length),                                    #next_op
         board,                                                      #original_board
         basexxx,              #bod
         notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
@@ -122,7 +132,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
         1 if (notnull(jsonbase["trip"]) in op_trips) else 0,      #is_op_studios
         int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
         int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
-        1 if (str(us_num) in story_post_ids) else 0,        #is_story
+        1 if (int(us_num) in story_hints) else 0,        #is_story
         -1, # prev_story post TODO                                  #prev_story
         -1, # next_story post TODO                                  #next_story
         1 if (str(us_num) in lewd_post_ids) else 0,         #is_lewd
@@ -134,12 +144,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, real_to_fake_tranny_dict
 finger.execute(create_posts)
 anus.commit()
 
-f = open("thread_hints.json")
-all_threads = json.loads(f.read())
-f.close()
-
 fake_n = 0
-
 
 for ttt in all_threads:
     rtftd = {}
@@ -153,8 +158,9 @@ for ttt in all_threads:
     posts = thread[str(op_n)]["posts"]
     thread_length = len(posts)
 
+    bigbook[str(op_n)] = str(fake_n)
     rtftd[str(op_n)] = str(fake_n)
-    commit_from_data(op, fake_n, op_n, fake_op_n, rtftd, replies=thread_length)
+    commit_from_data(op, fake_n, op_n, fake_op_n, op_n, rtftd, replies=thread_length)
     fake_n += 1
 
     ctr = 0
@@ -163,7 +169,7 @@ for ttt in all_threads:
         print("\b"*50, ctr, "out of", thread_length, end="")
         cur = posts[n]
         rtftd[str(n)] = str(fake_n)
-        commit_from_data(cur, fake_n, n, fake_op_n, rtftd)
+        commit_from_data(cur, fake_n, n, fake_op_n, op_n, rtftd)
         fake_n += 1
 
 anus.commit()
