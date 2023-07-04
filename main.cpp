@@ -71,6 +71,7 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
             tid_trimmed = real;
             bool is_num = true;
             foreach(tid_trimmed, c) {is_num &= std::isdigit(*c);}
+            if (tid_trimmed == "") {is_num = false;}
             if (!is_num)
             {
                 THROW404();

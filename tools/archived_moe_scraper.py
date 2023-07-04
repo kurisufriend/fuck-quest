@@ -133,8 +133,8 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
         int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
         int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
         1 if (int(us_num) in story_hints) else 0,        #is_story
-        -1, # prev_story post TODO                                  #prev_story
-        -1, # next_story post TODO                                  #next_story
+        story_hints[story_hints.index(int(us_num))-1] if int(us_num) in story_hints and story_hints.index(int(us_num))-1 >= 0 else -1, # prev_story post TODO                                  #prev_story
+        story_hints[story_hints.index(int(us_num))+1] if int(us_num) in story_hints and story_hints.index(int(us_num))+1 < len(story_hints) else -1, # next_story post TODO                                  #next_story
         1 if (str(us_num) in lewd_post_ids) else 0,         #is_lewd
         -1, # prev lewd post TODO                                    #prev_lewd
         -1, # next lewd post TODO                                    #next_lewd

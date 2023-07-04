@@ -11,10 +11,15 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
     bool is_op = data["is_op_studios"] == "1";
     int prev_op_studios_int = std::stoi(data["prev_op_studios"]);
     int prev_op = std::stoi(data["prev_op"]);
+    int prev_story = std::stoi(data["prev_story"]);
     int next_op_studios_int = std::stoi(data["next_op_studios"]);
+    int next_story = std::stoi(data["next_story"]);
     int op_no_int = std::stoi(data["op_no"]);
     int thread_ender = op_no_int+std::stoi(data["reply_count"]);
     std::map<std::string, std::string> nav_block = {
+        {"prev_story", dumbfmt({(prev_story >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_story"]})},
+        {"next_story", dumbfmt({(next_story <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_story"]})},
+
         {"prev_op", dumbfmt({(prev_op_studios_int >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_op_studios"]})},
         {"next_op", dumbfmt({(next_op_studios_int <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_op_studios"]})}
     };
