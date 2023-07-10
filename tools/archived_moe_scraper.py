@@ -81,7 +81,7 @@ next_op_studios_hints = json.loads(open("neo_next_op_studios_hints.json").read()
 prev_op_studios_hints = {}
 for k in next_op_studios_hints.keys():
     prev_op_studios_hints[str(next_op_studios_hints[k])] = str(k)
-story_hints = json.loads(open("story_hints.json").read())
+story_hints = json.loads(open("neo_story_hints.json").read())
 lewd_post_ids = []
 op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg", "!!gJwhmPB7G+T", "!!qBIEOkk6OUO"]
 

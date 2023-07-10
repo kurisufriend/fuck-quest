@@ -15,8 +15,8 @@ def fug():
     nig = finger.fetchall()
     for i in nig:
         n = i[5]
-        is_op = i[10]
-        bod = i[8].replace("&quot;", "\"").replace("&apos;", "'").replace("<br>", "").replace(" ", "")
+        is_op = i[12]
+        bod = i[10].replace("&quot;", "\"").replace("&apos;", "'").replace("<br>", "").replace(" ", "")
 
         if is_op == "1":
             story_posts.append(n)
@@ -26,6 +26,6 @@ def fug():
             story_posts.append(n)
 fug()
 print(story_posts)
-f = open("./story_hints.json", "w")
+f = open("./neo_story_hints.json", "w")
 f.write(json.dumps(story_posts))
 f.close()
