@@ -77,13 +77,13 @@ finger = anus.cursor()
 
 notnull = lambda a: a if not(a == "null") else False
 
-next_op_studios_hints = json.loads(open("next_op_studios_hints.json").read())
+next_op_studios_hints = json.loads(open("neo_next_op_studios_hints.json").read())
 prev_op_studios_hints = {}
 for k in next_op_studios_hints.keys():
     prev_op_studios_hints[str(next_op_studios_hints[k])] = str(k)
 story_hints = json.loads(open("story_hints.json").read())
 lewd_post_ids = []
-op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg", "!!gJwhmPB7G+T"]
+op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg", "!!gJwhmPB7G+T", "!!qBIEOkk6OUO"]
 
 f = open("thread_hints.json")
 all_threads = json.loads(f.read())
@@ -129,7 +129,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
         notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
         1 if (str(us_num) == str(op_n)) else 0,             #is_op
         thread_length,                                                #reply_count
-        1 if (notnull(jsonbase["trip"]) in op_trips) else 0,      #is_op_studios
+        1 if ((notnull(jsonbase["trip"]) in op_trips) and not((notnull(jsonbase["trip"]) == "!cxIwUVBDkg") and int(us_num) >= 15197)) else 0,      #is_op_studios# magic number check is to circumvent false OP positives due to a cracked tripcode
         int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
         int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
         1 if (int(us_num) in story_hints) else 0,        #is_story
