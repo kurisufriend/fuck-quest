@@ -116,6 +116,8 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
                 #print("okay NIGGER replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
                 #print(target)
         ctr += 1
+    basexxx = basexxx.replace("[spoiler]", "<spoiler>")
+    basexxx = basexxx.replace("[/spoiler]", "</spoiler>")
     commit_post_to_db(
         notnull(jsonbase["title"]) or "",                                #subject
         "", # b64 of the image TODO                                 #picrel

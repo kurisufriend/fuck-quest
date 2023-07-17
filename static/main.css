@@ -169,3 +169,11 @@ gt
     height: 1em;
     padding-right: .2em;
 }
+spoiler
+{
+    background-color: black;
+}
+spoiler:hover
+{
+    background-color: var(--fg);
+}
