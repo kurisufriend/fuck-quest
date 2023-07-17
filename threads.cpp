@@ -12,13 +12,19 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
     int prev_op_studios_int = std::stoi(data["prev_op_studios"]);
     int prev_op = std::stoi(data["prev_op"]);
     int prev_story = std::stoi(data["prev_story"]);
+    int prev_lewd = std::stoi(data["prev_lewd"]);
+    
     int next_op_studios_int = std::stoi(data["next_op_studios"]);
     int next_story = std::stoi(data["next_story"]);
+    int next_lewd = std::stoi(data["next_lewd"]);
     int op_no_int = std::stoi(data["op_no"]);
     int thread_ender = op_no_int+std::stoi(data["reply_count"]);
     std::map<std::string, std::string> nav_block = {
         {"prev_story", dumbfmt({(prev_story >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_story"]})},
         {"next_story", dumbfmt({(next_story <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_story"]})},
+
+        {"prev_lewd", dumbfmt({(prev_lewd >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_lewd"]})},
+        {"next_lewd", dumbfmt({(next_lewd <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_lewd"]})},
 
         {"prev_op", dumbfmt({(prev_op_studios_int >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_op_studios"]})},
         {"next_op", dumbfmt({(next_op_studios_int <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_op_studios"]})}
@@ -33,7 +39,8 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
         {"date", ctime(&ti)},
         {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
 
-        {"markers", dumbfmt({(data["is_ghost"] == "1") ? "<img src='/imgs/prof-ghost.png' title='ghost post!'></img>" : "", (data["is_story"] == "1") ? "<img src='/imgs/prof-story.png' title='story post!'></img>" : ""})},
+        #define genericmarker(name) (data["is_" #name] == "1") ? "<img src='/imgs/prof-"#name".png' title='"#name" post!'></img>" : ""
+        {"markers", dumbfmt({genericmarker(ghost), genericmarker(story), genericmarker(lewd)})},
     
         {"nav-top", (is_op && !reader_mode) ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},
         {"nav-bottom", (is_op && !reader_mode) ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},

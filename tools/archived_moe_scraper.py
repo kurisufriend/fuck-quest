@@ -82,7 +82,9 @@ prev_op_studios_hints = {}
 for k in next_op_studios_hints.keys():
     prev_op_studios_hints[str(next_op_studios_hints[k])] = str(k)
 story_hints = json.loads(open("neo_story_hints.json").read())
-lewd_post_ids = []
+lewd_hints = json.loads(open("lewd_hints.json").read())
+story_hints.extend(lewd_hints) # all lewd posts are story posts, including pastebin ones.
+story_hints = sorted(story_hints)
 op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg", "!!gJwhmPB7G+T", "!!qBIEOkk6OUO"]
 
 f = open("thread_hints.json")
@@ -133,11 +135,11 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
         int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
         int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
         1 if (int(us_num) in story_hints) else 0,        #is_story
-        story_hints[story_hints.index(int(us_num))-1] if int(us_num) in story_hints and story_hints.index(int(us_num))-1 >= 0 else -1, # prev_story post TODO                                  #prev_story
-        story_hints[story_hints.index(int(us_num))+1] if int(us_num) in story_hints and story_hints.index(int(us_num))+1 < len(story_hints) else -1, # next_story post TODO                                  #next_story
-        1 if (str(us_num) in lewd_post_ids) else 0,         #is_lewd
-        -1, # prev lewd post TODO                                    #prev_lewd
-        -1, # next lewd post TODO                                    #next_lewd
+        story_hints[story_hints.index(int(us_num))-1] if int(us_num) in story_hints and story_hints.index(int(us_num))-1 >= 0 else -1, # prev_story                                  #prev_story
+        story_hints[story_hints.index(int(us_num))+1] if int(us_num) in story_hints and story_hints.index(int(us_num))+1 < len(story_hints) else -1, # next_story post                                  #next_story
+        1 if (int(us_num) in lewd_hints) else 0,         #is_lewd
+        lewd_hints[lewd_hints.index(int(us_num))-1] if int(us_num) in lewd_hints and lewd_hints.index(int(us_num))-1 >= 0 else -1, # prev lewd post                                    #prev_lewd
+        lewd_hints[lewd_hints.index(int(us_num))+1] if int(us_num) in lewd_hints and lewd_hints.index(int(us_num))+1 < len(lewd_hints) else -1, # next lewd post                                    #next_lewd
         0 if (jsonbase["subnum"] == "0") else 1                                     #is_ghost
     )
 
