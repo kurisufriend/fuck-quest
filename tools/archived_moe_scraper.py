@@ -113,6 +113,10 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
                 basexxx = basexxx.replace("mu-i", "op-italics").replace("[/spoiler]", "</span>")
             ctr += 1
 
+    # who are you meme arrow ing
+    linez = [("<gt>"+l+"</gt>" if l.startswith(">") else l) for l in basexxx.split("\n")]
+    basexxx = "\n".join(linez)
+
     # replace backlink deadnames with new ones that are heckin cute and valid
     ctr = 0
     while ctr < len(basexxx):
