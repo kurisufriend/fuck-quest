@@ -102,7 +102,18 @@ prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, pre
 
 bigbook = {}
 def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tranny_dictionary, replies = -1):
+    is_op_studios = (notnull(jsonbase["trip"]) in op_trips) and not((notnull(jsonbase["trip"]) == "!cxIwUVBDkg") and int(us_num) >= 15197)
+        
     basexxx = notnull(jsonbase["comment"]) or "DICKS EVERYWHERE"
+    if board == "qst" and is_op_studios:
+        # fix OP italics, which were malformed for reasons not known to man
+        ctr = 0
+        while ctr < len(basexxx):
+            if basexxx[ctr] == "m" and (ctr+4 < len(basexxx)) and basexxx[ctr:ctr+4] == "mu-i":
+                basexxx = basexxx.replace("mu-i", "op-italics").replace("[/spoiler]", "</span>")
+            ctr += 1
+
+    # replace backlink deadnames with new ones that are heckin cute and valid
     ctr = 0
     while ctr < len(basexxx):
         if basexxx[ctr] == ">" and basexxx[ctr:ctr+2] == ">>" and not(basexxx[ctr:ctr+3] == ">>>"):
@@ -116,8 +127,10 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
                 #print("okay NIGGER replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
                 #print(target)
         ctr += 1
-    basexxx = basexxx.replace("[spoiler]", "<spoiler>")
-    basexxx = basexxx.replace("[/spoiler]", "</spoiler>")
+
+    # (;_;) <--- me (lazy bastard) (spoilers in raw CSS is easier anyway)
+    basexxx = basexxx.replace("[spoiler]", "<spoiler>").replace("[/spoiler]", "</spoiler>")
+
     commit_post_to_db(
         notnull(jsonbase["title"]) or "",                                #subject
         "", # b64 of the image TODO                                 #picrel
@@ -133,7 +146,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
         notnull(jsonbase["poster_hash"]) or "000000",                    #usr_id
         1 if (str(us_num) == str(op_n)) else 0,             #is_op
         thread_length,                                                #reply_count
-        1 if ((notnull(jsonbase["trip"]) in op_trips) and not((notnull(jsonbase["trip"]) == "!cxIwUVBDkg") and int(us_num) >= 15197)) else 0,      #is_op_studios# magic number check is to circumvent false OP positives due to a cracked tripcode
+        1 if (is_op_studios) else 0,      #is_op_studios# magic number check is to circumvent false OP positives due to a cracked tripcode
         int(prev_op_studios_hints.get(str(us_num)) or -1),                                     #prev_op_studios
         int(next_op_studios_hints.get(str(us_num)) or -1),                                     #next_op_studios
         1 if (int(us_num) in story_hints) else 0,        #is_story

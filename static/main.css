@@ -177,3 +177,7 @@ spoiler:hover
 {
     background-color: var(--fg);
 }
+.\"op-italics\"
+{
+    font-style: italic;
+}
