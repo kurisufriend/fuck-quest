@@ -12,6 +12,7 @@ todo
 * explode pastebin links into normal lewd dumps
     * marker 'this post used to be a pastebin link -- the content has been moved for your fapping pleasure.
 * replies hotlinks
+* the ENTIRE SMATTERS lewd from the s1-end-OVA is not marked as such. it's not canon either, but fuck it i need dat rabbit ass
 
 trivia:
 * in s02e01 vivian mentions that one of the recent DBA interns was 'valedictorian at CalTech'. Caltech (note the single capital letter) doesn't do valedictorians, and I don't think they do class ranks at all.

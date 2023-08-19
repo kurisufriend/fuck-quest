@@ -163,6 +163,8 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
     )
 
 finger.execute(create_posts)
+finger.execute(create_episodes)
+finger.execute(create_episode_assignments)
 anus.commit()
 
 fake_n = 0
@@ -192,5 +194,15 @@ for ttt in all_threads:
         rtftd[str(n)] = str(fake_n)
         commit_from_data(cur, fake_n, n, fake_op_n, op_n, rtftd)
         fake_n += 1
+
+print("\nloading episode data...")
+episode_hints = open("episode_hints.json", "r")
+edata = json.loads(episode_hints.read())
+episode_hints.close()
+for e in edata.keys():
+    d = edata[e]
+    finger.execute("insert into episodes values("+e+",\""+d[0]+"\");")
+    for ep in d[2]:
+        finger.execute("insert into episode_assignments values("+e+","+str(ep)+");")
 
 anus.commit()
