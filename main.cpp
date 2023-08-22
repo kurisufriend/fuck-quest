@@ -4,6 +4,7 @@
 #include "lib/json.hpp"
 
 #include "threads.h"
+#include "episodes.h"
 
 #include <cctype>
 #include <cstdlib>
@@ -92,6 +93,15 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
         {
             mg_http_reply(c, 200, headers.c_str(),
                 dumbfmt_file("./static/main.css", {}).c_str());
+        }
+        else if (mg_http_match_uri(msg, "/episodes"))
+        {
+            mg_http_reply(c, 200, headers.c_str(),
+                dumbfmt_file("./static/index.html", {
+                    {"body", dumbfmt_file("./static/template/episodes.html", {
+                        {"episode_listing", episodes::make_episode_list(db)}
+                    })}
+                }).c_str());
         }
 #define gimmick(inp, out)else if (mg_http_match_uri(msg, inp)) {mg_http_reply(c, 418, headers.c_str(), out);}
         gimmick("/rose", "won")

@@ -64,12 +64,14 @@ GENERATED :=
 OBJECTS :=
 
 GENERATED += $(OBJDIR)/dumbstr.o
+GENERATED += $(OBJDIR)/episodes.o
 GENERATED += $(OBJDIR)/main.o
 GENERATED += $(OBJDIR)/mongoose.o
 GENERATED += $(OBJDIR)/sqleasy.o
 GENERATED += $(OBJDIR)/sqlite3.o
 GENERATED += $(OBJDIR)/threads.o
 OBJECTS += $(OBJDIR)/dumbstr.o
+OBJECTS += $(OBJDIR)/episodes.o
 OBJECTS += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/mongoose.o
 OBJECTS += $(OBJDIR)/sqleasy.o
@@ -138,6 +140,9 @@ endif
 # File Rules
 # #############################################
 
+$(OBJDIR)/episodes.o: episodes.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/dumbstr.o: lib/dumbstr/dumbstr.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"

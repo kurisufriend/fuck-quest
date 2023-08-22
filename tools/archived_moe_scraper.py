@@ -60,14 +60,15 @@ next_lewd INTEGER,
 is_ghost INTEGER
 );"""
 
-create_episodes = """create table episodes(
+create_seasons = """create table seasons(
 number INTEGER,
 title TEXT
 );"""
 
 create_episode_assignments = """create table episode_assignments(
 number INTEGER,
-thread INTEGER
+thread INTEGER,
+title TEXT
 );"""
 
 try: os.remove("newfag.db")
@@ -163,7 +164,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
     )
 
 finger.execute(create_posts)
-finger.execute(create_episodes)
+finger.execute(create_seasons)
 finger.execute(create_episode_assignments)
 anus.commit()
 
@@ -201,8 +202,8 @@ edata = json.loads(episode_hints.read())
 episode_hints.close()
 for e in edata.keys():
     d = edata[e]
-    finger.execute("insert into episodes values("+e+",\""+d[0]+"\");")
+    finger.execute("insert into seasons values("+e+",\""+d[0]+"\");")
     for ep in d[2]:
-        finger.execute("insert into episode_assignments values("+e+","+str(ep)+");")
+        finger.execute("insert into episode_assignments values("+e+","+str(ep[0])+",\""+str(ep[1])+"\");")
 
 anus.commit()
