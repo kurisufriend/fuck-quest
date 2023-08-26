@@ -6,4 +6,36 @@
 {{{temp}}}
 
 {{{nav}}}
+<script>
+var posts = document.getElementsByClassName("post");
+var replymap = {};
+for (let post of posts)
+{
+    let no = post.querySelector(".no").lastElementChild.innerHTML.substring(4);
+    replymap[no] = [];
+}
+for (let post of posts)
+{
+    let no = post.querySelector(".no").lastElementChild.innerHTML.substring(4);
+    let b = post.querySelector(".body").innerHTML;
+    let last = 0;
+    const re = /<a href=\"#\d*\">&gt;&gt;\d*<\/a>/g;
+    let c = re.exec(b);
+    while (c)
+    {
+        c = c[0];
+        c = c.slice(c.indexOf("&gt;&gt;") + 8, -4);
+        replymap[c].push(no);
+        c = re.exec(b);
+    }
+}
+for (let post of posts)
+{
+    let no = post.querySelector(".no").lastElementChild.innerHTML.substring(4);
+    for (let repl of replymap[no])
+    {
+        post.querySelector(".reply-backlinks").innerHTML += "<a href='#"+repl+"'>>>"+repl+"</a> ";
+    }
+}
+</script>
 <div id="bottom"></div>

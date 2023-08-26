@@ -10,7 +10,6 @@ todo
     * scrape down images as best we can, thumbnails and full-size if available
 * explode pastebin links into normal lewd dumps
     * marker 'this post used to be a pastebin link -- the content has been moved for your fapping pleasure.
-* replies hotlinks
 * the ENTIRE SMATTERS lewd from the s1-end-OVA is not marked as such. it's not canon either, but fuck it i need dat rabbit ass
 * have episode page show lewd # (?)
 
