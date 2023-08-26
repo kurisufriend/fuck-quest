@@ -66,3 +66,19 @@ std::string threads::make_thread(sqlite3* db, int op_id, bool reader_mode, bool 
     cache.emplace(std::make_pair(op_id, reader_mode), acc);
     return acc;
 }
+
+std::pair<std::string, std::string> threads::get_prev_next_thread(sqlite3* db, int op_id, bool cach)
+{
+    std::string acc = "";
+    static std::map<int, std::pair<std::string, std::string>> cache;
+    if (cache.find(op_id) != cache.end() && cach)
+        return cache.at(op_id);
+    rows next = 
+        sqleasy_q{db, dfmt({"select * from posts where post_number=", std::to_string(op_id), ";"})}.exec();
+    rows last = 
+        sqleasy_q{db, dfmt({"select * from posts where post_number=", std::to_string(op_id-1), ";"})}.exec();
+    std::string prev = "";
+    foreach(last, l)
+        {prev = (*l)["op_no"];} // don't ask
+    return std::pair<std::string, std::string>((prev == "") ? "0" : prev, std::to_string(op_id+1+std::stoi(next[0]["reply_count"])));
+}

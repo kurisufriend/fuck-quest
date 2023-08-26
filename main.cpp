@@ -81,11 +81,16 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
             bool reader_mode = (query == "reader_mode");
             int tid = std::stoi(tid_trimmed);
             headers.append("Content-Type: text/html;charset=shift_jis\n");
+            std::pair<std::string, std::string> prev_next = threads::get_prev_next_thread(db, tid);
             mg_http_reply(c, 200, headers.c_str(),
                 dumbfmt_file("./static/index.html", {
                     {"body", dumbfmt_file("./static/template/tview.html", {
                         {"temp", threads::make_thread(db, tid, reader_mode).c_str()},
-                        {"nav", dumbfmt_file("./static/template/tnav.html",{{"query_link", reader_mode ? "?" : "?reader_mode"}})}
+                        {"nav", dumbfmt_file("./static/template/tnav.html",{
+                            {"query_link", reader_mode ? "?" : "?reader_mode"},
+                            {"prev_ep", prev_next.first},
+                            {"next_ep", prev_next.second}
+                        })}
                     })}
                 }).c_str());
         }
