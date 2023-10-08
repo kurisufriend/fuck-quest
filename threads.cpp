@@ -39,6 +39,8 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
         {"date", ctime(&ti)},
         {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
 
+        {"image", data["picrel"] == "" ? "" : dumbfmt_file("./static/template/image.html", {{"thumbname", data["picrel"]}, {"filename", data["picrel"]}, {"size", is_op ? "250" : "125"}})},
+
         #define genericmarker(name) (data["is_" #name] == "1") ? "<img src='/imgs/prof-"#name".png' title='"#name" post!'></img>" : ""
         {"markers", dumbfmt({genericmarker(ghost), genericmarker(story), genericmarker(lewd)})},
     
