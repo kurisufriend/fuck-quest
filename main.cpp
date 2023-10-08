@@ -40,7 +40,7 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
                     {"body", dumbfmt_file("./static/template/main-body.html", {})}
                 }).c_str());
         }
-        else if (mg_http_match_uri(msg, "/imgs/*"))
+        else if (mg_http_match_uri(msg, "/imgs/*") || mg_http_match_uri(msg, "/media/*"))
         {
             std::string stub = "./static";
             foreach(url, iter)
@@ -80,7 +80,7 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
             }
             bool reader_mode = (query == "reader_mode");
             int tid = std::stoi(tid_trimmed);
-            headers.append("Content-Type: text/html;charset=shift_jis\n");
+            headers.append("Content-Type: text/html;charset=utf-8\n");
             std::pair<std::string, std::string> prev_next = threads::get_prev_next_thread(db, tid);
             mg_http_reply(c, 200, headers.c_str(),
                 dumbfmt_file("./static/index.html", {

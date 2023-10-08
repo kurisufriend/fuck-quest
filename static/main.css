@@ -8,6 +8,8 @@
 body 
 {
     background-color: var(--bg);
+    font-family: 'IPAGothic';
+    /*font-size: 10pt;*/
 }
 .post {
 	background-color: var(--fg);
@@ -180,4 +182,16 @@ spoiler:hover
 .\"op-italics\"
 {
     font-style: italic;
+}
+.media-cont
+{
+    display: block;
+}
+.media
+{
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 3px;
+    margin-bottom: 5px;
 }
