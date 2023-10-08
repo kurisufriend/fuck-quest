@@ -84,7 +84,10 @@ for k in next_op_studios_hints.keys():
     prev_op_studios_hints[str(next_op_studios_hints[k])] = str(k)
 story_hints = json.loads(open("neo_story_hints.json").read())
 lewd_hints = json.loads(open("lewd_hints.json").read())
-story_hints.extend(lewd_hints) # all lewd posts are story posts, including pastebin ones.
+#WHY THE FUCK DID I DO THIS???story_hints.extend(lewd_hints) # all lewd posts are story posts, including pastebin ones.
+for i in lewd_hints:
+    if not(i in story_hints):
+        story_hints.append(i)
 story_hints = sorted(story_hints)
 op_trips = ["!!q2GxCwU0EVE", "!cxIwUVBDkg", "!!gJwhmPB7G+T", "!!qBIEOkk6OUO"]
 
@@ -138,7 +141,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
 
     commit_post_to_db(
         notnull(jsonbase["title"]) or "",                                #subject
-        "", # b64 of the image TODO                                 #picrel
+        "" if jsonbase.get("media") == None else board+jsonbase['media']['media_orig'], # b64 of the image TODO                                 #picrel
         notnull(jsonbase["name"]) or "Anonymous",                        #name
         notnull(jsonbase["trip"]) or "",                                 #trip
         int(notnull(jsonbase["timestamp"])) or 0,                        #tim
