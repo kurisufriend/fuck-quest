@@ -37,6 +37,7 @@ create_posts = """create table posts(
 subject TEXT,
 picrel TEXT,
 picrel_name TEXT,
+picrel_spoiler INTEGER,
 name TEXT,
 trip TEXT,
 tim INTEGER,
@@ -98,7 +99,7 @@ f.close()
 
 bare_threads = [int(i[1]) for i in all_threads]
 
-def commit_post_to_db(subject, picrel, picrel_name, name, trip, tim, post_number, op_no, prev_op, next_op, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
+def commit_post_to_db(subject, picrel, picrel_name, picrel_spoiler, name, trip, tim, post_number, op_no, prev_op, next_op, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
 prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd, is_ghost):
     j = locals().copy()
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
@@ -144,6 +145,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
         notnull(jsonbase["title"]) or "",                                #subject
         "" if jsonbase.get("media") == None else board+jsonbase['media']['media_orig'], #picrel
         "" if jsonbase.get("media") == None else jsonbase['media']['media_filename'],#picrel_name
+        0 if jsonbase.get("media") == None else int(jsonbase["media"]["spoiler"]),#picrel_spoiler
         notnull(jsonbase["name"]) or "Anonymous",                        #name
         notnull(jsonbase["trip"]) or "",                                 #trip
         int(notnull(jsonbase["timestamp"])) or 0,                        #tim
