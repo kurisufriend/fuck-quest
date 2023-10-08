@@ -29,6 +29,21 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
         {"prev_op", dumbfmt({(prev_op_studios_int >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_op_studios"]})},
         {"next_op", dumbfmt({(next_op_studios_int <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_op_studios"]})}
     };
+
+    std::string upload_filename = data["picrel_name"];
+    if (upload_filename != "")
+    {
+        int ext_idx = upload_filename.find_last_of(".");
+        std::string file_ext = upload_filename.substr(ext_idx);
+        upload_filename = upload_filename.substr(0, ext_idx);
+        if (upload_filename.length() >= 15)
+        {
+            upload_filename = upload_filename.substr(0, 15).append("(...)");
+        }
+        upload_filename = upload_filename.append(file_ext);
+    }
+
+
     time_t ti = (time_t)std::stoi(data["tim"]);
     return dumbfmt_file("./static/template/post.html", {
         {"no", data["post_number"]},
@@ -39,7 +54,7 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
         {"date", ctime(&ti)},
         {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
 
-        {"image", data["picrel"] == "" ? "" : dumbfmt_file("./static/template/image.html", {{"thumbname", data["picrel"]}, {"filename", data["picrel"]}, {"size", is_op ? "250" : "125"}})},
+        {"image", data["picrel"] == "" ? "" : dumbfmt_file("./static/template/image.html", {{"thumbname", data["picrel"]}, {"filename", data["picrel"]}, {"uploadname", upload_filename}, {"size", is_op ? "250" : "125"}})},
 
         #define genericmarker(name) (data["is_" #name] == "1") ? "<img src='/imgs/prof-"#name".png' title='"#name" post!'></img>" : ""
         {"markers", dumbfmt({genericmarker(ghost), genericmarker(story), genericmarker(lewd)})},

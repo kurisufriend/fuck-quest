@@ -36,6 +36,7 @@ def get_thread(board, id):
 create_posts = """create table posts(
 subject TEXT,
 picrel TEXT,
+picrel_name TEXT,
 name TEXT,
 trip TEXT,
 tim INTEGER,
@@ -97,7 +98,7 @@ f.close()
 
 bare_threads = [int(i[1]) for i in all_threads]
 
-def commit_post_to_db(subject, picrel, name, trip, tim, post_number, op_no, prev_op, next_op, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
+def commit_post_to_db(subject, picrel, picrel_name, name, trip, tim, post_number, op_no, prev_op, next_op, original_board, bod, usr_id, is_op, reply_count, is_op_studios,
 prev_op_studios, next_op_studios, is_story, prev_story, next_story, is_lewd, prev_lewd, next_lewd, is_ghost):
     j = locals().copy()
     k = lambda a: a.replace('"', '&quot;').replace('\'', '&apos;').replace("\n", "<br>")
@@ -108,7 +109,7 @@ bigbook = {}
 def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tranny_dictionary, replies = -1):
     is_op_studios = (notnull(jsonbase["trip"]) in op_trips) and not((notnull(jsonbase["trip"]) == "!cxIwUVBDkg") and int(us_num) >= 15197)
         
-    basexxx = notnull(jsonbase["comment"]) or "DICKS EVERYWHERE"
+    basexxx = notnull(jsonbase["comment"]) or ""#"DICKS EVERYWHERE"
     if board == "qst" and is_op_studios:
         # fix OP italics, which were malformed for reasons not known to man
         ctr = 0
@@ -141,7 +142,8 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
 
     commit_post_to_db(
         notnull(jsonbase["title"]) or "",                                #subject
-        "" if jsonbase.get("media") == None else board+jsonbase['media']['media_orig'], # b64 of the image TODO                                 #picrel
+        "" if jsonbase.get("media") == None else board+jsonbase['media']['media_orig'], #picrel
+        "" if jsonbase.get("media") == None else jsonbase['media']['media_filename'],#picrel_name
         notnull(jsonbase["name"]) or "Anonymous",                        #name
         notnull(jsonbase["trip"]) or "",                                 #trip
         int(notnull(jsonbase["timestamp"])) or 0,                        #tim
