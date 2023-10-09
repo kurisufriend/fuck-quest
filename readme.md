@@ -1,5 +1,8 @@
 fahk quest
 
+current status:
+    imgs from /a/ are nonexistent. we have thumbnails, and only thumbnails. i'm working on it.
+
 
 todo
 
@@ -8,12 +11,11 @@ todo
 * save the miraheze wiki somehow. maybe bring it back as a mediawiki site.
 * ~~picrel~~
     * ~~scrape down images as best we can, thumbnails and full-size if available~~
-    * upgrade /a/ thumbs to real imgs
+    * upgrade /a/ thumbs to real imgs via reverse searching
     * get deleted /tg/ imgs (not on suptg) from somewhere
     * current status: 97.39143106965899% low self esteem coverage
     * 75.76508306616147% coverage
-    * generate thumbs for image db
-* image spoilers
+    * ~~generate thumbs for image db~~
 * explode pastebin links into normal lewd dumps
     * marker 'this post used to be a pastebin link -- the content has been moved for your fapping pleasure.
 * the ENTIRE SMATTERS lewd from the s1-end-OVA is not marked as such. it's not canon either, but fuck it i need dat rabbit ass
