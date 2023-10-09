@@ -40,7 +40,8 @@ void callback(connection* c, int ev, void* ev_data, void* fn_data)
                     {"body", dumbfmt_file("./static/template/main-body.html", {})}
                 }).c_str());
         }
-        else if (mg_http_match_uri(msg, "/imgs/*") || mg_http_match_uri(msg, "/media/*"))
+        else if (mg_http_match_uri(msg, "/imgs/*") || mg_http_match_uri(msg, "/media/*")
+                || mg_http_match_uri(msg, "/thumbs/*"))
         {
             std::string stub = "./static";
             foreach(url, iter)

@@ -109,7 +109,7 @@ for imagek in manifest.keys():
         isthumb = image["sources"] == []
         endpoint = image["thumbs"][0] if isthumb else image["sources"][(proxy_iter % 2) % len(image["sources"])]
 
-        if os.path.exists("media/"+("thumbs/" if isthumb else "")+imagek):
+        if os.path.exists("media/"+("to_be_upgraded/" if isthumb else "")+imagek):
             print(imagek, "found, go around...")
             break
 
@@ -126,7 +126,7 @@ for imagek in manifest.keys():
         print(r.status_code)
 
         if status == 200:
-            f = open("media/"+("thumbs/" if isthumb else "")+imagek, "wb")
+            f = open("media/"+("to_be_upgraded/" if isthumb else "")+imagek, "wb")
             f.write(r.content)
             f.close()
         tries += 1
