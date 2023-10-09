@@ -47,8 +47,9 @@ for bread in breads:
 
 #check against manifest
 med = os.listdir("media/")
+med.extend(os.listdir("media/promoted"))
 low_self_esteem = med.copy()
-low_self_esteem.extend(os.listdir("media/thumbs"))
+low_self_esteem.extend(os.listdir("media/to_be_upgraded"))
 good = 0
 goodl = 0
 missing = []

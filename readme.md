@@ -1,7 +1,8 @@
 fahk quest
 
 current status:
-    imgs from /a/ are nonexistent. we have thumbnails, and only thumbnails. i'm working on it.
+    ~~imgs from /a/ are nonexistent. we have thumbnails, and only thumbnails. i'm working on it.~~
+    scraped a little under a third of them from the archives because they hashmatch with something posted more recently. still working on it.
 
 
 todo
@@ -13,8 +14,8 @@ todo
     * ~~scrape down images as best we can, thumbnails and full-size if available~~
     * upgrade /a/ thumbs to real imgs via reverse searching
     * get deleted /tg/ imgs (not on suptg) from somewhere
-    * current status: 97.39143106965899% low self esteem coverage
-    * 75.76508306616147% coverage
+    * current status: 97.39871757505101% low self esteem coverage (thinks thumbs are good enough)
+    * 82.2427863596619% fullsize coverage
     * ~~generate thumbs for image db~~
 * explode pastebin links into normal lewd dumps
     * marker 'this post used to be a pastebin link -- the content has been moved for your fapping pleasure.
