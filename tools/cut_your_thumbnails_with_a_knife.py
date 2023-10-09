@@ -18,13 +18,18 @@ for m in wanting:
 print(missing)
 print(good/len(wanting));input()
 
-for fn in os.listdir("./media"):
-    if fn == "thumbs" or fn == "to_be_upgraded" or fn == ".gitignore": continue
+vivian = os.listdir("./media")
+amber = vivian.copy()
+amber.extend(os.listdir("./media/promoted"))
+
+for fn in amber:
+    if fn == "thumbs" or fn == "to_be_upgraded" or fn == "promoted" or fn == ".gitignore": continue
+    frompath = f"./media/{'promoted/' if fn not in vivian else ''}"+fn
     if fn.endswith(".webm"):
-        subprocess.call(['ffmpeg', '-i', "./media/"+fn, '-ss', '00:00:00.000', '-vframes', '1', "./media/thumbs/"+fn+".png"])
+        subprocess.call(['ffmpeg', '-i', frompath, '-ss', '00:00:00.000', '-vframes', '1', "./media/thumbs/"+fn+".png"])
         continue
     if os.path.exists("./media/thumbs/"+fn): continue
     print(fn)
-    i = Image.open("./media/"+fn)
+    i = Image.open(frompath)
     i.thumbnail([125, 125])
     i.save("./media/thumbs/"+fn)
