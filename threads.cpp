@@ -31,10 +31,15 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
     };
 
     std::string upload_filename = data["picrel_name"];
+    std::string thumb = data["picrel"];
     if (upload_filename != "")
     {
         int ext_idx = upload_filename.find_last_of(".");
         std::string file_ext = upload_filename.substr(ext_idx);
+        if (file_ext == ".webm")
+        {
+            thumb.append(".png");
+        }
         upload_filename = upload_filename.substr(0, ext_idx);
         if (upload_filename.length() >= 15)
         {
@@ -54,7 +59,7 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
         {"date", ctime(&ti)},
         {"body", dumbfmt_replace("[realquoterep]", "\"", data["bod"])},
 
-        {"image", data["picrel"] == "" ? "" : dumbfmt_file("./static/template/image.html", {{"thumbname", data["picrel_spoiler"]=="1" ? "spoiler.png" : data["picrel"]}, {"filename", data["picrel"]}, {"uploadname", data["picrel_spoiler"]=="1" ? "Spoiler Image" : upload_filename}, {"size", is_op ? "250" : "125"}})},
+        {"image", data["picrel"] == "" ? "" : dumbfmt_file("./static/template/image.html", {{"thumbname", data["picrel_spoiler"]=="1" ? "spoiler.png" : thumb}, {"filename", data["picrel"]}, {"uploadname", data["picrel_spoiler"]=="1" ? "Spoiler Image" : upload_filename}, {"size", is_op ? "250" : "125"}})},
 
         #define genericmarker(name) (data["is_" #name] == "1") ? "<img src='/imgs/prof-"#name".png' title='"#name" post!'></img>" : ""
         {"markers", dumbfmt({genericmarker(ghost), genericmarker(story), genericmarker(lewd)})},
