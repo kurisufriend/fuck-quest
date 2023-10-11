@@ -31,7 +31,8 @@ for bread in breads:
             pass
         else:
             suptg_url = f"https://suptg.thisisnotatrueending.com/{board if board == 'qst' else ''}archive/{year}/{num}/{'thumbs' if board == 'qst' else 'images'}/{poast['media']['media_orig']}"
-            res.append(suptg_url)
+            if num != "33857162": #fq fan ova, not on suptg
+                res.append(suptg_url)
 
         if poast["media"].get("media_link"):
             res.append(poast["media"]["media_link"])

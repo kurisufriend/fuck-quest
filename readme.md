@@ -14,7 +14,8 @@ todo
     * ~~scrape down images as best we can, thumbnails and full-size if available~~
     * upgrade /a/ thumbs to real imgs via reverse searching
     * get deleted /tg/ imgs (not on suptg) from somewhere
-    * current status: 97.39871757505101% low self esteem coverage (thinks thumbs are good enough)
+    * total thumbs missing 277
+    * current status: 97.98163800641213% low self esteem coverage (thinks thumbs are good enough)
     * 82.2427863596619% fullsize coverage
     * ~~generate thumbs for image db~~
 * explode pastebin links into normal lewd dumps
