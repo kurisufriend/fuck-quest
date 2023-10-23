@@ -8,6 +8,12 @@
 {{{nav}}}
 <script>
 var posts = document.getElementsByClassName("post");
+
+if (posts[0])
+{
+    document.title = "/fq/ - " + posts[0].querySelector(".subject").innerHTML;
+}
+
 var replymap = {};
 for (let post of posts)
 {
