@@ -57,8 +57,8 @@ for (let backlink of backlinks)
             let float = postmap[no].cloneNode(true);
             float.className = "backlink-floater";
             let pos = backlink.getBoundingClientRect();
-            float.style.left = String(pos.left + 10)+"px";
-            float.style.top = String(pos.top + window.scrollY + 10)+"px";
+            float.style.left = String(pos.right)+"px";
+            float.style.top = String(pos.top + window.scrollY)+"px";
             document.body.appendChild(float);
         }
     };
