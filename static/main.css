@@ -21,6 +21,20 @@ body
     margin-left: 1em;
     margin-bottom: .3em;
 }
+.backlink-floater {
+	background-color: var(--fg);
+	border: 1px solid var(--fgbord);
+	border-left: none;
+	border-top: none;
+	display: table;
+	padding: 4px;
+    margin-left: 1em;
+    margin-bottom: .3em;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    cursor: none;
+}
 .footer-i
 {
     display: flex;

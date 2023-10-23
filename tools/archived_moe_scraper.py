@@ -132,7 +132,7 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
             target = basexxx[ctr:ctr2]
             if len(target) > 2 and real_to_fake_tranny_dictionary.get(target[2:]):
                 rep = real_to_fake_tranny_dictionary[target[2:]]
-                basexxx = basexxx.replace(target, f'<a href=[realquoterep]#{rep}[realquoterep]>'+">>"+rep+"</a>")
+                basexxx = basexxx.replace(target, f'<a class=[realquoterep]backlink[realquoterep] href=[realquoterep]#{rep}[realquoterep]>'+">>"+rep+"</a>")
                 #basexxx = basexxx[:ctr] + real_to_fake_tranny_dictionary[target[2:]] + basexxx[ctr2:]
                 #print("okay NIGGER replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
                 #print(target)
