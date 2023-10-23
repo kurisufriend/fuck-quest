@@ -19,6 +19,39 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
     int next_lewd = std::stoi(data["next_lewd"]);
     int op_no_int = std::stoi(data["op_no"]);
     int thread_ender = op_no_int+std::stoi(data["reply_count"]);
+
+    std::string nav_body = "";
+    nav_body = nav_body.append(
+        dumbfmt_file("./static/template/navbutton.html", {
+            {"tag", "OP"},
+            {"prev", dumbfmt({(prev_op_studios_int >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_op_studios"]})},
+            {"next", dumbfmt({(next_op_studios_int <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_op_studios"]})}
+
+        })
+    );
+    if (next_story != -1)
+    {
+        nav_body = nav_body.append(
+            dumbfmt_file("./static/template/navbutton.html", {
+                {"tag", "story"},
+                {"prev", dumbfmt({(prev_story >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_story"]})},
+                {"next", dumbfmt({(next_story <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_story"]})},
+
+            })
+        );
+    }
+    if (next_lewd != -1)
+    {
+        nav_body = nav_body.append(
+            dumbfmt_file("./static/template/navbutton.html", {
+                {"tag", "lewd"},
+                {"prev", dumbfmt({(prev_lewd >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_lewd"]})},
+                {"next", dumbfmt({(next_lewd <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_lewd"]})},
+
+            })
+        );
+    }
+    /*
     std::map<std::string, std::string> nav_block = {
         {"prev_story", dumbfmt({(prev_story >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_story"]})},
         {"next_story", dumbfmt({(next_story <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_story"]})},
@@ -28,7 +61,7 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
 
         {"prev_op", dumbfmt({(prev_op_studios_int >= op_no_int) ? "#" : dumbfmt({"/fq/", std::to_string(prev_op), "#"}), data["prev_op_studios"]})},
         {"next_op", dumbfmt({(next_op_studios_int <= thread_ender) ? "#" : dumbfmt({"/fq/", std::to_string(thread_ender+1), "#"}), data["next_op_studios"]})}
-    };
+    };*/
 
     std::string upload_filename = data["picrel_name"];
     std::string thumb = data["picrel"];
@@ -64,8 +97,8 @@ std::string threads::make_post(sqlite3* db, row data, bool reader_mode)
         #define genericmarker(name) (data["is_" #name] == "1") ? "<img src='/imgs/prof-"#name".png' title='"#name" post!'></img>" : ""
         {"markers", dumbfmt({genericmarker(ghost), genericmarker(story), genericmarker(lewd)})},
     
-        {"nav-top", (is_op && !reader_mode) ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},
-        {"nav-bottom", (is_op && !reader_mode) ? dumbfmt_file("./static/template/navigator.html", nav_block) : ""},
+        {"nav-top", (is_op && !reader_mode) ? dumbfmt_file("./static/template/navigator.html", {{"navbody", nav_body}}) : ""},
+        {"nav-bottom", (is_op && !reader_mode) ? dumbfmt_file("./static/template/navigator.html", {{"navbody", nav_body}}) : ""},
 
         {"specials", is_op ? "op-studios" : ""}
         
