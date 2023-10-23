@@ -7,6 +7,8 @@ current status:
 
 todo
 
+* static titles
+* handle subnums properly
 * 'next' nav buttons break if the next OP doesn't contain the next post
 * next x when you are not actually an x
 * save the miraheze wiki somehow. maybe bring it back as a mediawiki site.
