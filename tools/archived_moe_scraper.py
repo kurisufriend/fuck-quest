@@ -128,13 +128,16 @@ def commit_from_data(jsonbase, us_num, og_us_num, op_n, og_op_n, real_to_fake_tr
     while ctr < len(basexxx):
         if basexxx[ctr] == ">" and basexxx[ctr:ctr+2] == ">>" and not(basexxx[ctr:ctr+3] == ">>>"):
             ctr2 = ctr+2
-            while ctr2 < len(basexxx) and (ord(basexxx[ctr2]) >= 48 and ord(basexxx[ctr2]) <= 57 ): ctr2 += 1
+            while ctr2 < len(basexxx) and ((ord(basexxx[ctr2]) >= 48 and ord(basexxx[ctr2]) <= 57) or basexxx[ctr2] == ','): ctr2 += 1
             target = basexxx[ctr:ctr2]
+            if target[-1] == ',':
+                target = target[:-1]
+            #if "," in target: print(target[2:], real_to_fake_tranny_dictionary.get(target[2:]))
             if len(target) > 2 and real_to_fake_tranny_dictionary.get(target[2:]):
                 rep = real_to_fake_tranny_dictionary[target[2:]]
                 basexxx = basexxx.replace(target, f'<a class=[realquoterep]backlink[realquoterep] href=[realquoterep]#{rep}[realquoterep]>'+">>"+rep+"</a>")
                 #basexxx = basexxx[:ctr] + real_to_fake_tranny_dictionary[target[2:]] + basexxx[ctr2:]
-                #print("okay NIGGER replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
+                #print("okay [redacted] replacing", target[2:], "with", real_to_fake_tranny_dictionary[target[2:]])
                 #print(target)
         ctr += 1
 
@@ -199,7 +202,7 @@ for ttt in all_threads:
         ctr += 1
         print("\b"*50, ctr, "out of", thread_length, end="")
         cur = posts[n]
-        rtftd[str(n)] = str(fake_n)
+        rtftd[str(n).replace("_", ",")] = str(fake_n)
         commit_from_data(cur, fake_n, n, fake_op_n, op_n, rtftd)
         fake_n += 1
 
