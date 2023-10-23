@@ -7,7 +7,6 @@ current status:
 
 todo
 
-* static titles
 * 'next' nav buttons break if the next OP doesn't contain the next post
 * save the miraheze wiki somehow. maybe bring it back as a mediawiki site.
 * ~~picrel~~
@@ -20,7 +19,6 @@ todo
     * ~~generate thumbs for image db~~
 * explode pastebin links into normal lewd dumps
     * marker 'this post used to be a pastebin link -- the content has been moved for your fapping pleasure.
-* the ENTIRE SMATTERS lewd from the s1-end-OVA is not marked as such. it's not canon either, but fuck it i need dat rabbit ass
 * have episode page show lewd # (?)
     * use lewd tags n stuff.
 * go through the whole story myself to check QoL.

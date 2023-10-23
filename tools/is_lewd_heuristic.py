@@ -14,10 +14,10 @@ base = base.replace(" ", "")
 def fug():
     nig = finger.fetchall()
     for i in nig:
-        n = i[5]
-        is_op = i[12]
-        obod = i[10]
-        bod = i[10].replace("&quot;", "\"").replace("&apos;", "'").replace("<br>", "").replace(" ", "")
+        n = i[7]
+        is_op = i[14]
+        obod = i[12]
+        bod = i[12].replace("&quot;", "\"").replace("&apos;", "'").replace("<br>", "").replace(" ", "")
         if n=="44638": 
             print(len(obod), bod)
             input()
